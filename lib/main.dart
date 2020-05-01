@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'quizbrain.dart';
+
+Quizbrain quizbrain = Quizbrain();
 
 void main() => runApp(Quizzler());
 
@@ -28,13 +31,26 @@ class _QuizPageState extends State<QuizPage> {
   @override
   List<Icon> scorekeeper = [];
 
-  List<String> Questions = [
-    'You can lead a cow down stairs but not up stairs.',
-        'Approximately one quarter of human bones are in the feet.',
-        'A slug\'s blood is green.'
-  ];
+  void checkans(bool userpickd) {
+    bool correctans = quizbrain.getCorrectans();
+    setState(() {
+      if (userpickd == correctans) {
+        scorekeeper.add(Icon(
+          Icons.check,
+          color: Colors.green,
+        ));
+      } else {
+        scorekeeper.add(Icon(
+          Icons.close,
+          color: Colors.red,
+        ));
+      }
 
-  int questionnum = 0;
+      quizbrain.nextQuestion();
+    });
+  }
+
+//
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -46,7 +62,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                Questions[questionnum],
+                quizbrain.questionText(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -70,12 +86,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  questionnum++;
-                  print(questionnum);
-                });
-
-
+                checkans(true);
 
                 //The user picked true.
               },
@@ -95,11 +106,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  questionnum++;
-                  print(questionnum);
-                });
-                //The user picked false.
+                checkans(false);
               },
             ),
           ),
@@ -112,9 +119,3 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 }
-
-/*
-question1: 'You can lead a cow down stairs but not up stairs.', false,
-question2: 'Approximately one quarter of human bones are in the feet.', true,
-question3: 'A slug\'s blood is green.', true,
-*/
